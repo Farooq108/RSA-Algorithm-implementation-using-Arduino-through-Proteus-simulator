@@ -1,0 +1,82 @@
+#include <LiquidCrystal.h>
+
+// Define LCD pin connections
+const int RS = 7;
+const int EN = 6;
+const int D4 = 5;
+const int D5 = 4;
+const int D6 = 3;
+const int D7 = 2;
+
+// Initialize the LCD
+LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
+
+void setup() {
+    // Initialize the LCD: 16 columns, 2 rows
+    lcd.begin(16, 2);
+    lcd.print("Initializing...");
+    delay(2000); // Wait 2 seconds for readability
+
+    // Clear the screen after initialization
+    lcd.clear();
+
+    // Message to process
+    char message[] = "INDIA";
+    char modified_message[12] = {0}; // Array to store cipher text
+    char *ptr_message = message;
+    char *ptr_mod_message = modified_message;
+    char plain_char, modified_char;
+    int temp, temp2, quotient;
+    int p,q,n,fi,d,e;
+
+    // Process each character in the message
+    while (*ptr_message != '\0') {
+        plain_char = *ptr_message;
+
+        // Perform mathematical operations to create cipher text
+        p = 3;
+        q = 11;
+        fi = (p - 1) * (q - 1);
+        e= 3;
+        d= 7;
+
+        temp = plain_char * p; // Cube ASCII value
+        n= 0x21;                    // Using 0x21 as the divisor
+        quotient = temp / n;         // Divide the cube by 0x21
+        temp2 = quotient * n;        // Multiply back the quotient
+        modified_char = temp - temp2 + 0x45;         // Calculate remainder and add correction factor
+
+        // Store the modified character in the array
+        *ptr_mod_message = modified_char;
+
+        // Move to the next character
+        ptr_message++;
+        ptr_mod_message++;
+    }
+
+    // Display the original message and its cipher text
+    ptr_message = message;
+    ptr_mod_message = modified_message;
+
+    for (int i = 0; *ptr_message != '\0'; i++) {
+        // Display original character (plain text) on the first row
+        lcd.setCursor(i, 0); // Move cursor to the next column
+        lcd.print(*ptr_message);
+
+        // Display corresponding cipher text on the second row
+        lcd.setCursor(i, 1); // Move cursor to the same column on the second row
+        lcd.print(*ptr_mod_message);
+
+        // Move pointers to the next character
+        ptr_message++;
+        ptr_mod_message++;
+
+        delay(1000); // Add delay to observe each step
+    }
+
+    // After all characters are displayed, stop updating the LCD
+}
+
+void loop() {
+    // Endless loop to keep the content displayed
+}
